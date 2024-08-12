@@ -9,9 +9,27 @@ lerna-debug.log*
 
 node_modules
 */node_modules
-dist
-dist-ssr
-*.local
+*/dist
+*/dist-ssr
+**/*.local
+
+# Hardhat files
+hardhat/cache
+hardhat/artifacts
+
+# TypeChain files
+hardhat/typechain
+hardhat/typechain-types
+
+# solidity-coverage files
+hardhat/coverage
+hardhat/coverage.json
+
+# Hardhat Ignition default folder for deployments against a local node
+hardhat/ignition/deployments/
+
+
+
 
 # Editor directories and files
 .vscode/*
