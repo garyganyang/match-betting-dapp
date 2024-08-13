@@ -1,0 +1,21 @@
+.custom-border-color div {
+  @apply border-neutral-800;
+  @apply border-r;
+}
+
+.row-summary{
+  color: coral;
+}
+
+.row-match:hover {
+  background-color: #24272a;
+}
+
+.unbet {
+  background-color: #FFFFE8;
+  color: #CCCCCC;
+  cursor: pointer;
+}
+.unbet:hover{
+  background-color: #24272a;
+}

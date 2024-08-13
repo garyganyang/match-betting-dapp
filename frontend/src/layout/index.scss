@@ -1,6 +1,13 @@
 .demo-logo-vertical {
-  height: 32px;
-  margin: 16px;
-  background: rgba(255, 255, 255, .2);
-  border-radius: 6px;
+  height: calc(64px - 16px);
+  margin: 8px 16px;
+  //background: rgba(255, 255, 255, .2);
+  //border-radius: 6px;
+  background-image: url("../assets/preview/logo.png");
+  background-position: left;
+  background-repeat: no-repeat;
+  background-size: contain;
+  text-align: right;
 }
+
+$layout-body-background: red;
