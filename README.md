@@ -15,3 +15,7 @@ this is a Match Betting ÐApp build on EVM(test net).
 6. deploy contract to test net like.
 
 
+### Preview(预览)
+<div style=" margin: 0 auto;">
+  <img src="frontend/src/assets/preview/preview1.jpg" alt="" title="" style=" ">
+</div>
