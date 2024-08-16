@@ -2,16 +2,18 @@ import "./index.scss";
 // import {UploadOutlined, UserOutlined, VideoCameraOutlined} from '@ant-design/icons';
 import store from "/src/redux/reduxStore";
 import {Layout, theme, ConfigProvider, Button} from 'antd';
+import Icon, {GithubFilled} from "@ant-design/icons";
 import {Outlet} from "react-router-dom";
 import {FunctionComponent, useState, useContext} from "react";
+import {ethers} from "ethers";
 import Aside from "./aside"
 import {css} from '@emotion/css';
-import {GithubFilled} from "@ant-design/icons";
 
 // 使用 React.FunctionComponent 定义 函数组件 的类型
 // 使用 React.Component         定义   类组件 的类型
 const MyLayout: FunctionComponent = () => {
     const [name, setName] = useState<string>(store.getState().HomeComponentReducer.name); //获取store.name作为默认值
+    const [walletAddress, setWalletAddress] = useState<string>(store.getState().HomeComponentReducer.walletAddress); //获取store.name作为默认值
     store.subscribe(() => {
         const storeData = store.getState();
         setName(storeData.HomeComponentReducer.name); //更新store.name值
@@ -27,7 +29,7 @@ const MyLayout: FunctionComponent = () => {
         &.${rootPrefixCls}-btn-primary:not([disabled]):not(.${rootPrefixCls}-btn-dangerous) {
             border-width: 0;
 
-            > span {
+            > span, img {
                 position: relative;
             }
 
@@ -46,8 +48,42 @@ const MyLayout: FunctionComponent = () => {
             }
         }
     `;
-    const connectWallet = () => {
 
+
+    const connectWallet = async () => {
+        // let signer;
+        let provider;
+        if (window.ethereum == null) {
+            // If MetaMask is not installed, we use the default provider,
+            // which is backed by a variety of third-party services (such
+            // as INFURA). They do not have private keys installed,
+            // so they only have read-only access
+            console.log("MetaMask not installed; using read-only defaults")
+            provider = ethers.getDefaultProvider()
+        } else {
+            // Connect to the MetaMask EIP-1193 object. This is a standard
+            // protocol that allows Ethers access to make all read-only
+            // requests through MetaMask.
+
+            // const accounts = await window.ethereum.request({
+            //     method: 'eth_requestAccounts'
+            // });
+            // console.log('Connected MetaMask Account:', accounts);
+
+            provider = new ethers.BrowserProvider(window.ethereum)
+            // It also provides an opportunity to request access to write
+            // operations, which will be performed by the private key
+            // that MetaMask manages for the user.
+            provider.getSigner().then(signer=>{
+                // 执行一些操作，例如获取账户地址
+                signer.getAddress().then((address) => {
+                    setWalletAddress(address)
+                    console.log("Connected to MetaMask:", walletAddress);
+                }).catch((e: any) => {
+                    console.log(e)
+                });
+            });
+        }
     }
 
 
@@ -99,7 +135,10 @@ const MyLayout: FunctionComponent = () => {
                                 }}
                             >
                                 <a className="text-2xl mr-4 " href="https://github.com/garyganyang" target="_blank" rel="noopener noreferrer"><GithubFilled/></a>
-                                <Button type="primary" onClick={connectWallet}>Connect wallet</Button>
+                                {/*{if }*/}
+                                <Button type="primary" onClick={connectWallet}>
+                                    <img src="https://chainlist.org/connectors/icn-metamask.svg" width="20" height="20" alt=""/>
+                                    Connect wallet</Button>
                             </ConfigProvider>
                         </div>
 

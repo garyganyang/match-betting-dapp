@@ -1,7 +1,9 @@
-import {FunctionComponent} from 'react'
+import {FunctionComponent, useState, useEffect, useRef} from 'react'
 // import {useNavigate} from "react-router-dom";
 import store, {HomeComponentReducerActionType} from "../../redux/reduxStore";
-import {Button, Table} from 'antd';
+import {Button, InputNumber, Checkbox} from 'antd';
+import type {GetProp} from 'antd';
+
 import {getInfo2} from "../../http/api";
 import "./index.scss"
 
@@ -16,19 +18,6 @@ interface Props {
 const HomeComponent: FunctionComponent<Props> = ({title}) => {
     title = title || "Home"
     // const navigate = useNavigate()
-    for (let i = 0; i < 999; i++) { // 用于测试懒加载
-        console.log(i * i)
-    }
-
-    const updateCount = () => {
-        store.dispatch({type: HomeComponentReducerActionType.UPDATE_NAME, name: "其实我是想搞区块链全栈开发的,不得不把react学一学", payload: ""});
-    }
-    const callGetInfo2 = () => {
-        getInfo2().then((res: unknown) => {
-            console.log(res)
-        })
-    }
-    const data = ['Apple', 'Banana', 'Orange'];
     const matches: any = {
         "dataFrom": "",
         "emptyFlag": false,
@@ -3410,141 +3399,134 @@ const HomeComponent: FunctionComponent<Props> = ({title}) => {
             "lastUpdateTime": "2024-08-13 21:48:35"
         }
     }
+    const [fixedWidth, setFixedWidth] = useState('100%'); // 初始宽度
+    const aRef = useRef(null);
 
+    useEffect(() => {
+        const updateFixedWidth = () => {
+            const aElement: any = aRef.current;
+            const width = aElement.offsetWidth;
+            setFixedWidth(width);
+        };
+
+        // 初始设置
+        updateFixedWidth();
+
+        // 监听窗口大小变化
+        window.addEventListener('resize', updateFixedWidth);
+
+        // 清除监听器
+        return () => window.removeEventListener('resize', updateFixedWidth);
+    }, []);
+
+    const updateCount = () => {
+        store.dispatch({type: HomeComponentReducerActionType.UPDATE_NAME, name: "其实我是想搞区块链全栈开发的,不得不把react学一学", payload: ""});
+    }
+
+    // @ts-ignore allow-with-description
+    const callGetInfo2 = () => {
+        getInfo2().then((res: unknown) => {
+            console.log(res)
+        })
+    }
+
+    const onChange: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+        console.log('checked = ', checkedValues);
+    };
 
     return (
-        <div>
+        <div className="ml-32 mr-32 overflow-x-scroll">
             {/*<div className="font-bold text-lg">我我我</div>*/}
-            <div className="text-lg custom-border-color">
+            <div ref={aRef} className="text-lg custom-border-color" style={{paddingBottom: 50}}>
                 <div className="header flex border-t text-center">
                     <div className="border-l" style={{lineHeight: "80px", height: 80, minWidth: 100}}>赛事编号</div>
-                    <div className="" style={{lineHeight: "80px", height: 80, minWidth: 140}}>赛事</div>
-                    <div className="" style={{lineHeight: "80px", height: 80, minWidth: 200}}>开赛时间</div>
-                    <div className="" style={{lineHeight: "80px", height: 80, width: "100%"}}>主队 VS 客队</div>
+                    <div className="" style={{lineHeight: "80px", height: 80, minWidth: 120}}>赛事</div>
+                    <div className="" style={{lineHeight: "80px", height: 80, minWidth: 120}}>开赛时间</div>
+                    <div className="" style={{lineHeight: "80px", height: 80, width: "100%", minWidth: 360}}>主队 VS 客队</div>
                     <div className="" style={{lineHeight: "80px", height: 80, minWidth: 100}}>让球</div>
                     <div className="" style={{lineHeight: "80px", height: 80, minWidth: 100}}>胜</div>
                     <div className="" style={{lineHeight: "80px", height: 80, minWidth: 100}}>平</div>
                     <div className="" style={{lineHeight: "80px", height: 80, minWidth: 100}}>负</div>
-                    <div className="" style={{minWidth: 200,borderRight:0}}>
-                        <div className="  " style={{lineHeight: "40px", height: 40,borderRight:0}}>支持率</div>
-                        <div className="flex border-t" style={{lineHeight: "40px", height: 40,borderRight:0}}>
+                    <div className="" style={{minWidth: 200, borderRight: 0}}>
+                        <div className="  " style={{lineHeight: "40px", height: 40, borderRight: 0}}>支持率</div>
+                        <div className="flex border-t" style={{lineHeight: "40px", height: 40, borderRight: 0}}>
                             <div className="flex-1" style={{}}>胜</div>
                             <div className="flex-1" style={{}}>平</div>
-                            <div className="flex-1" style={{borderRight:0}}>负</div>
+                            <div className="flex-1" style={{borderRight: 0}}>负</div>
                         </div>
                     </div>
                 </div>
-                {matches.value.matchInfoList.map((eachInfo, index1) => {
+                {matches.value.matchInfoList.map((eachInfo: any) => {
                     return (
-                        <>
-                            <div key={index1} className="row-summary flex border-t border-l pl-2 pt-3 pb-3">{eachInfo.weekday} {eachInfo.businessDate} 共{eachInfo.matchCount}场比赛</div>
-                            {eachInfo.subMatchList.map((eachMatch, index2) => (
-                                <div key={index2} className="row-match flex border-t text-center">
+                        <div key={eachInfo.businessDate} >
+                            <div className="row-summary flex border-t border-l pl-2 pt-3 pb-3">{eachInfo.weekday} {eachInfo.businessDate} 共{eachInfo.matchCount}场比赛</div>
+                            {eachInfo.subMatchList.map((eachMatch: any) => (
+                                <div key={eachMatch.matchId} className="row-match flex border-t text-center">
                                     <div className="border-l " style={{lineHeight: "80px", height: 80, minWidth: 100}}>{eachMatch.matchNumStr}</div>
-                                    <div className="" style={{lineHeight: "80px", height: 80, minWidth: 140, backgroundColor: "#"+eachMatch.backColor}}>{eachMatch.leagueAllName}</div>
-                                    <div className="" style={{lineHeight: "80px", height: 80, minWidth: 200}}>{eachMatch.matchDate.substring(5,)} {eachMatch.matchTime.substring(0,5)}</div>
-                                    <div className="flex" style={{lineHeight: "80px", height: 80, width: "100%"}}>
-                                        <div className="flex-1 text-right" style={{borderRight:0}}>{eachMatch.homeTeamAllName}</div>
-                                        <div className="ml-8 mr-8" style={{borderRight:0}}>VS</div>
-                                        <div className="flex-1 text-left" style={{borderRight:0}}>{eachMatch.awayTeamAllName}</div>
-
+                                    <div className="" style={{lineHeight: "80px", height: 80, minWidth: 120, backgroundColor: "#" + eachMatch.backColor}}>{eachMatch.leagueAllName}</div>
+                                    <div className="" style={{lineHeight: "80px", height: 80, minWidth: 120}}>{eachMatch.matchDate.substring(5,)} {eachMatch.matchTime.substring(0, 5)}</div>
+                                    <div className="flex" style={{lineHeight: "80px", height: 80, width: "100%", minWidth: 360}}>
+                                        <div className="flex-1 text-right" style={{borderRight: 0}}>{eachMatch.homeTeamAllName}</div>
+                                        <div className="ml-8 mr-8" style={{borderRight: 0}}>VS</div>
+                                        <div className="flex-1 text-left" style={{borderRight: 0}}>{eachMatch.awayTeamAllName}</div>
                                     </div>
                                     <div className="" style={{lineHeight: "80px", height: 80, minWidth: 100}}>
-                                        <div className="  " style={{lineHeight: "40px", height: 40,borderRight:0}}>{eachMatch.oddsList[1].goalLine || "0"}</div>
-                                        <div className="  " style={{lineHeight: "40px", height: 40,borderRight:0}}>{eachMatch.oddsList[0].goalLine || "0"}</div>
+                                        <div className="  " style={{lineHeight: "40px", height: 40, borderRight: 0}}>{eachMatch.oddsList[1].goalLine || "0"}</div>
+                                        <div className="  " style={{lineHeight: "40px", height: 40, borderRight: 0}}>{eachMatch.oddsList[0].goalLine || "0"}</div>
                                     </div>
                                     <div className="" style={{lineHeight: "80px", height: 80, minWidth: 100}}>
-                                        <div className="unbet" style={{lineHeight: "40px", height: 40,borderRight:0}}>{Number(eachMatch.oddsList[1].h).toFixed(2) || "0"}</div>
-                                        <div className="unbet" style={{lineHeight: "40px", height: 40,borderRight:0}}>{Number(eachMatch.oddsList[0].h).toFixed(2) || "0"}</div>
+                                        <div className="unbet" style={{lineHeight: "40px", height: 40, borderRight: 0}}>{Number(eachMatch.oddsList[1].h).toFixed(2) || "0"}</div>
+                                        <div className="unbet" style={{lineHeight: "40px", height: 40, borderRight: 0}}>{Number(eachMatch.oddsList[0].h).toFixed(2) || "0"}</div>
                                     </div>
                                     <div className="" style={{lineHeight: "80px", height: 80, minWidth: 100}}>
-                                        <div className="unbet" style={{lineHeight: "40px", height: 40,borderRight:0}}>{Number(eachMatch.oddsList[1].d).toFixed(2) || "0"}</div>
-                                        <div className="unbet" style={{lineHeight: "40px", height: 40,borderRight:0}}>{Number(eachMatch.oddsList[0].d).toFixed(2) || "0"}</div>
+                                        <div className="unbet unbet-select" style={{lineHeight: "40px", height: 40, borderRight: 0}}>{Number(eachMatch.oddsList[1].d).toFixed(2) || "0"}</div>
+                                        <div className="unbet" style={{lineHeight: "40px", height: 40, borderRight: 0}}>{Number(eachMatch.oddsList[0].d).toFixed(2) || "0"}</div>
                                     </div>
                                     <div className="" style={{lineHeight: "80px", height: 80, minWidth: 100}}>
-                                        <div className="unbet" style={{lineHeight: "40px", height: 40,borderRight:0}}>{Number(eachMatch.oddsList[1].a).toFixed(2) || "0"}</div>
-                                        <div className="unbet" style={{lineHeight: "40px", height: 40,borderRight:0}}>{Number(eachMatch.oddsList[0].a).toFixed(2) || "0"}</div>
+                                        <div className="unbet" style={{lineHeight: "40px", height: 40, borderRight: 0}}>{Number(eachMatch.oddsList[1].a).toFixed(2) || "0"}</div>
+                                        <div className="unbet" style={{lineHeight: "40px", height: 40, borderRight: 0}}>{Number(eachMatch.oddsList[0].a).toFixed(2) || "0"}</div>
                                     </div>
                                     <div className="" style={{minWidth: 200}}>
-                                        <div className="flex border-t" style={{lineHeight: "40px", height: 40}}>
+                                        <div className="flex" style={{lineHeight: "40px", height: 40, borderRight: 0}}>
                                             <div className="flex-1" style={{}}>10%</div>
-                                            <div className="flex-1" style={{}}>10%</div>
-                                            <div className="flex-1" style={{}}>10%</div>
+                                            <div className="flex-1" style={{}}>11%</div>
+                                            <div className="flex-1" style={{borderRight: 0}}>12%</div>
                                         </div>
-                                        <div className="flex border-t" style={{lineHeight: "40px", height: 40}}>
+                                        <div className="flex border-t" style={{lineHeight: "40px", height: 40, borderRight: 0}}>
                                             <div className="flex-1" style={{}}>10%</div>
                                             <div className="flex-1" style={{}}>10%</div>
-                                            <div className="flex-1" style={{}}>10%</div>
+                                            <div className="flex-1" style={{borderRight: 0}}>10%</div>
                                         </div>
                                     </div>
                                 </div>
                             ))}
-                        </>
+                        </div>
                     )
                 })}
+                <div className="border-t"></div>
             </div>
-            {/*<Table columns={[*/}
-            {/*    // {*/}
-            {/*    //     title: '赛事编号',*/}
-            {/*    //     dataIndex: 'key',*/}
-            {/*    //     rowScope: 'row',*/}
-            {/*    // },*/}
-            {/*    {*/}
-            {/*        title: 'Match No.',*/}
-            {/*        align: 'center',*/}
-            {/*        dataIndex: 'name',*/}
-            {/*        render: (text) => <a>123</a>,*/}
-            {/*        onCell: (_, index) => ({*/}
-            {/*            colSpan: index === 1 ? 5 : 1,*/}
-            {/*        }),*/}
-            {/*    },*/}
-            {/*    {*/}
-            {/*        title: 'League',*/}
-            {/*        align: 'center',*/}
-            {/*        dataIndex: 'leagueAbbName',*/}
-            {/*        // onCell: sharedOnCell,*/}
-            {/*    },*/}
-            {/*    {*/}
-            {/*        title: 'Match Date',*/}
-            {/*        align: 'center',*/}
-            {/*        dataIndex: 'matchDate',*/}
-            {/*        // onCell: sharedOnCell,*/}
-            {/*    },*/}
-            {/*    {*/}
-            {/*        title: 'Home VS Away',*/}
-            {/*        align: 'center',*/}
-            {/*        colSpan: 2,*/}
-            {/*        dataIndex: 'tel',*/}
-            {/*        onCell: (_, index) => {*/}
-            {/*            if (index === 3) {*/}
-            {/*                return { rowSpan: 2 };*/}
-            {/*            }*/}
-            {/*            // These two are merged into above cell*/}
-            {/*            if (index === 4) {*/}
-            {/*                return { rowSpan: 0 };*/}
-            {/*            }*/}
-            {/*            if (index === 1) {*/}
-            {/*                return { colSpan: 0 };*/}
-            {/*            }*/}
-
-            {/*            return {};*/}
-            {/*        },*/}
-            {/*    },*/}
-            {/*    {*/}
-            {/*        title: 'Phone',*/}
-            {/*        align: 'center',*/}
-            {/*        // colSpan: 0,*/}
-            {/*        dataIndex: 'phone',*/}
-            {/*        // onCell: sharedOnCell,*/}
-            {/*    },*/}
-            {/*    {*/}
-            {/*        title: 'Address',*/}
-            {/*        align: 'center',*/}
-            {/*        dataIndex: 'address',*/}
-            {/*        // onCell: sharedOnCell,*/}
-            {/*    },*/}
-            {/*]} dataSource={data} bordered />;*/}
-            {/*<Button type="primary" onClick={updateCount}>通过Redux改变数据 {title}</Button>*/}
+            <div className="fixed-bottom flex" style={{width: fixedWidth + 'px', minWidth: 1300}}>
+                <div className="bottom-div ml-6 mr-10">已选0场比赛</div>
+                <div className="flex items-center justify-center flex-col">
+                    <div className="w-full">过关方式: M串N</div>
+                    <div className="w-full">
+                        <Checkbox.Group className="text-white" options={["1", "2", "3",]} defaultValue={['Apple']} onChange={onChange}/>
+                    </div>
+                </div>
+                <div className="flex-1"></div>
+                <div className="mr-10 flex items-center justify-center flex-col">
+                    <InputNumber className="" defaultValue={1} max={50} min={1} suffix={"倍"} changeOnWheel={true} controls={true} style={{}}/>
+                    <div className="">(最高50倍)</div>
+                </div>
+                <div className="mr-10 flex items-center justify-center flex-col">
+                    <div className="w-full">投注金额: <span>22</span> wei</div>
+                    <div className="w-full">理论最高奖金: <span>136.59</span> wei</div>
+                </div>
+                <div className="flex items-center text-right" style={{height: "inherit", lineHeight: "inherit"}}>
+                    <Button className="mr-6" type="primary" onClick={updateCount}>奖金详情</Button>
+                    <Button className="mr-6" type="primary" onClick={updateCount}>立即投注</Button>
+                </div>
+            </div>
             {/*<Button type="primary" onClick={callGetInfo2}>call http api</Button>*/}
         </div>
     );

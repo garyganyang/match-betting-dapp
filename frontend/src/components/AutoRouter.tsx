@@ -1,14 +1,14 @@
 //这个组件用于拦截判断token是否存在。
 import {useLocation, Navigate} from "react-router-dom";
-import {matchRoute} from "/src/util/util";
-import {routerItem} from "/src/routes/index";
+import {matchRoute} from "../util/util";
+import {routerItem} from "../routes";
 
 function AutoRouter(props: { children: JSX.Element }) {
     const {pathname} = useLocation();
     const token = localStorage.getItem("token");
 
     //1、获取当前路径对应的路由配置
-    const route = matchRoute(pathname, routerItem);
+    const route: any = matchRoute(pathname, routerItem);
     //2、如果noAuth为true，则直接跳过校验
     if (route && route.meta && route.meta.noAuth) {
         // 路由配置noAuth，则不需要校验

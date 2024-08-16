@@ -1,10 +1,12 @@
 import {useRoutes, Navigate} from "react-router-dom";
 import {lazy} from "react";
 
+// @ts-ignore "/src/layout/index"
 import LayoutComponent from "/src/layout/index";
-import LoginComponent from "/src/pages/login/index";
-import HomeComponent from "/src/pages/home/index";
-import User from "/src/pages/user";
+// import LoginComponent from "/src/pages/login/index";
+// import HomeComponent from "/src/pages/home/index";
+// import User from "/src/pages/user";
+// @ts-ignore "/src/pages/404/error404";
 import Error404 from "/src/pages/404/error404";
 //公共
 import lazyLoad from "./lazyLoad";
@@ -38,6 +40,7 @@ export const routerItem: Array<object> = [
                 path: "home",
                 key: "home",
                 label: "竞彩足球",
+                // @ts-ignore /src/pages/home/index"
                 element: lazyLoad(lazy(() => import("/src/pages/home/index"))),//这里是延迟加载
             },
             // {
