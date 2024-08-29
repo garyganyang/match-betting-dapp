@@ -1,0 +1,147 @@
+{
+  "manifestVersion": "3.2",
+  "proxies": [
+    {
+      "address": "0xB66DEA52F6adC9a3A29CB5E93abeD6fc04019A68",
+      "txHash": "0x15899f3f9b7b9cb1d1e2d4df2b998be52447eb67f9c2590c40fddfa78ca6a4ba",
+      "kind": "uups"
+    },
+    {
+      "address": "0xD6D805C004C84AE26A1d8fc923066f7f26735880",
+      "txHash": "0xa8c833c6c2980515f16a8b3b0f4611d539ac2fa43bfaebbdec92cf07048cd3dd",
+      "kind": "uups"
+    },
+    {
+      "address": "0x5450dA38039f2fB3d88f2f91D9Aa7A6a0191B26F",
+      "txHash": "0x8cfa3b441be3ff2dfb96cd67320368d46e175607c800ad40c33f13b62f4c901f",
+      "kind": "uups"
+    },
+    {
+      "address": "0x9FF8Da1a8884b05d4439A3Db09be139b3861BbD2",
+      "txHash": "0x82535b1f376093f84918a5cd5bbbff95e42eab97e06a07903e20832ac4be6f51",
+      "kind": "uups"
+    },
+    {
+      "address": "0x10115D6e6f3079502dd25C5925432B0E5D68a225",
+      "txHash": "0x0512e9d2babd9f6aad9b44cbf22787963ce3e7d6b1227f0454aa5f0c58b1c517",
+      "kind": "uups"
+    },
+    {
+      "address": "0x5763AC90040Fb82d2C94f8A2E08b52BF75eb363e",
+      "txHash": "0x6cf60bb1a2b84199ebde3e873a3413682a8a97f9c1c4ec177f6932ea2f503e61",
+      "kind": "uups"
+    },
+    {
+      "address": "0x017368BCE07004aE87503e200b6C12BdBF7ccbdF",
+      "txHash": "0x959b7de10261ad6e67be26aba43cd369287f1cad6fa05df9397ca78df5a512bc",
+      "kind": "uups"
+    },
+    {
+      "address": "0x3D2AEc28b501c28335e24C16619e5Af5004Dcc22",
+      "txHash": "0x6040237fcf54b6f234897172a63ae3eee6e359966b4add7335e9617a41a933d3",
+      "kind": "uups"
+    },
+    {
+      "address": "0xcD61e9A35c854C9c3809422434f4aAb755c40A52",
+      "txHash": "0xe8e9bb95761991dcc361eaf76ebaf020d4e2630ee63fef926635553196440f7d",
+      "kind": "uups"
+    }
+  ],
+  "impls": {
+    "57fb77367bc93558f0f79e7c33bedf27ec090e06d67fba4a5b19de88a03f5a02": {
+      "address": "0xbD595D2c82bfa4a79B6ef2a3215040C43410Bd37",
+      "txHash": "0xe7bd87bf2fa398ae5f841e386a2d8e8d6a73125228fb8c890c5458d8a44b8319",
+      "layout": {
+        "solcVersion": "0.8.24",
+        "storage": [
+          {
+            "label": "unlockTime",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256",
+            "contract": "Lock",
+            "src": "contracts\\Lock.sol:10"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_struct(InitializableStorage)80_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(OwnableStorage)13_storage": {
+            "label": "struct OwnableUpgradeable.OwnableStorage",
+            "members": [
+              {
+                "label": "_owner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Ownable": [
+            {
+              "contract": "OwnableUpgradeable",
+              "label": "_owner",
+              "type": "t_address",
+              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

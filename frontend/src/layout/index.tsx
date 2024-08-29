@@ -13,7 +13,11 @@ import {css} from '@emotion/css';
 // 使用 React.Component         定义   类组件 的类型
 const MyLayout: FunctionComponent = () => {
     const [name, setName] = useState<string>(store.getState().HomeComponentReducer.name); //获取store.name作为默认值
-    const [walletAddress, setWalletAddress] = useState<string>(store.getState().HomeComponentReducer.walletAddress); //获取store.name作为默认值
+    const [walletAddress, setWalletAddress] = useState<string>(store.getState().HomeComponentReducer.walletAddress); //获取store.walletAddress作为默认值
+    const [signer, setSigner] = useState<ethers.JsonRpcSigner>(store.getState().HomeComponentReducer.signer); //获取store.signer作为默认值
+    const [bettingContract, setBettingContract] = useState<ethers.Contract>(store.getState().HomeComponentReducer.bettingContract); //获取store.signer作为默认值
+
+
     store.subscribe(() => {
         const storeData = store.getState();
         setName(storeData.HomeComponentReducer.name); //更新store.name值
@@ -59,31 +63,39 @@ const MyLayout: FunctionComponent = () => {
             // as INFURA). They do not have private keys installed,
             // so they only have read-only access
             console.log("MetaMask not installed; using read-only defaults")
+            alert("MetaMask not installed")
             provider = ethers.getDefaultProvider()
-        } else {
-            // Connect to the MetaMask EIP-1193 object. This is a standard
-            // protocol that allows Ethers access to make all read-only
-            // requests through MetaMask.
-
-            // const accounts = await window.ethereum.request({
-            //     method: 'eth_requestAccounts'
-            // });
-            // console.log('Connected MetaMask Account:', accounts);
-
-            provider = new ethers.BrowserProvider(window.ethereum)
-            // It also provides an opportunity to request access to write
-            // operations, which will be performed by the private key
-            // that MetaMask manages for the user.
-            provider.getSigner().then(signer=>{
-                // 执行一些操作，例如获取账户地址
-                signer.getAddress().then((address) => {
-                    setWalletAddress(address)
-                    console.log("Connected to MetaMask:", walletAddress);
-                }).catch((e: any) => {
-                    console.log(e)
-                });
-            });
+            return
         }
+
+        // Connect to the MetaMask EIP-1193 object. This is a standard
+        // protocol that allows Ethers access to make all read-only
+        // requests through MetaMask.
+
+        // const accounts = await window.ethereum.request({
+        //     method: 'eth_requestAccounts'// method: 'eth_accounts'
+        // });
+        // if (accounts.length == 0) {
+        //     alert("Cannot find a account")
+        //     return
+        // }
+        // setWalletAddress(accounts[0])
+        // console.log('Connected MetaMask Account:', accounts);
+
+        provider = new ethers.BrowserProvider(window.ethereum)
+        // It also provides an opportunity to request access to write
+        // operations, which will be performed by the private key
+        // that MetaMask manages for the user.
+        provider.getSigner().then(signer => {
+            //     执行一些操作，例如获取账户地址
+            setSigner(signer)
+            signer.getAddress().then((address) => {
+                // setWalletAddress(address)
+                console.log("Connected to MetaMask:", address);
+            }).catch((e: any) => {
+                console.log(e)
+            });
+        });
     }
 
 
@@ -135,10 +147,14 @@ const MyLayout: FunctionComponent = () => {
                                 }}
                             >
                                 <a className="text-2xl mr-4 " href="https://github.com/garyganyang" target="_blank" rel="noopener noreferrer"><GithubFilled/></a>
-                                {/*{if }*/}
-                                <Button type="primary" onClick={connectWallet}>
-                                    <img src="https://chainlist.org/connectors/icn-metamask.svg" width="20" height="20" alt=""/>
-                                    Connect wallet</Button>
+                                {walletAddress ?
+                                    <Button type="primary">
+                                        <img src="https://chainlist.org/connectors/icn-metamask.svg" width="20" height="20" alt=""/>
+                                        Connected {`${walletAddress.substring(0, 6)}...${walletAddress.substring(38)}`}</Button>
+                                    :
+                                    <Button type="primary" onClick={connectWallet}>
+                                        <img src="https://chainlist.org/connectors/icn-metamask.svg" width="20" height="20" alt=""/>
+                                        Connect wallet</Button>}
                             </ConfigProvider>
                         </div>
 

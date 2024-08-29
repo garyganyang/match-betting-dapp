@@ -1,5 +1,7 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-ethers";
+import "@openzeppelin/hardhat-upgrades";
 
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
@@ -10,7 +12,7 @@ const config: HardhatUserConfig = {
   networks: {
     ganache: {
       url: "http://127.0.0.1:7545",
-      accounts: ["0x2fd14371afcd4700ef7addcd6f9e00bb92c9ea59075746d18f79196de7f69b2c"],
+      accounts: ["0x0b9b9d9b088a4e0307c4b732a97146788538a3c212ac60dd5b915e322560bd1b"],
       chainId: 1337,
     },
   }

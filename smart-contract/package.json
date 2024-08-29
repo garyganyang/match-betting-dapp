@@ -8,11 +8,11 @@
   },
   "scripts": {
     "clean": "hardhat clean",
-    "compile": "hardhat compile",
+    "compile": "hardhat compile --show-stack-traces",
     "test": "hardhat test",
     "rebuild": "hardhat clean && hardhat compile",
     "start-node": "hardhat node",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
@@ -35,5 +35,10 @@
     "ts-node": ">=8.0.0",
     "typechain": "^8.3.0",
     "typescript": ">=4.5.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "@openzeppelin/hardhat-upgrades": "^5.0.2",
+    "@openzeppelin/contracts-upgradeable": "^5.0.2"
   }
 }
