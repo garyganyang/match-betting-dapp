@@ -1,8 +1,8 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
 // Uncomment this line to use console.log
-import "node_modules/hardhat/console.sol";
+//import "node_modules/hardhat/console.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
@@ -32,7 +32,7 @@ contract Lock is UUPSUpgradeable, OwnableUpgradeable {
 
     function withdraw() public onlyOwner {
         // Uncomment this line, and the import of "hardhat/console.sol", to print a log in your terminal
-        console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
+//        console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
 
         require(block.timestamp >= unlockTime, "You can't withdraw yet, Too early to unlock.");
 //        require(msg.sender == owner, "You aren't the owner");

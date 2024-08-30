@@ -1,6 +1,6 @@
 import "./index.scss";
-// import {UploadOutlined, UserOutlined, VideoCameraOutlined} from '@ant-design/icons';
-import store from "/src/redux/reduxStore";
+import store from "../redux/reduxStore.ts";
+import {EthereumReducerActionType} from "../redux/ethereumState.ts";
 import {Layout, theme, ConfigProvider, Button} from 'antd';
 import Icon, {GithubFilled} from "@ant-design/icons";
 import {Outlet} from "react-router-dom";
@@ -12,20 +12,16 @@ import {css} from '@emotion/css';
 // 使用 React.FunctionComponent 定义 函数组件 的类型
 // 使用 React.Component         定义   类组件 的类型
 const MyLayout: FunctionComponent = () => {
-    const [name, setName] = useState<string>(store.getState().HomeComponentReducer.name); //获取store.name作为默认值
-    const [walletAddress, setWalletAddress] = useState<string>(store.getState().HomeComponentReducer.walletAddress); //获取store.walletAddress作为默认值
-    const [signer, setSigner] = useState<ethers.JsonRpcSigner>(store.getState().HomeComponentReducer.signer); //获取store.signer作为默认值
-    const [bettingContract, setBettingContract] = useState<ethers.Contract>(store.getState().HomeComponentReducer.bettingContract); //获取store.signer作为默认值
+    const [, setProvider] = useState<any>(); //获取store.name作为默认值
+    // const [walletAddress, setWalletAddress] = useState(); //获取store.walletAddress作为默认值
+    const [, setSigner] = useState<any>(); //获取store.signer作为默认值
+    const [accountAddress, setAccountAddress] = useState<any>(); //获取store.signer作为默认值
+    // const [bettingContract, setBettingContract] = useState(); //获取store.signer作为默认值
 
-
-    store.subscribe(() => {
-        const storeData = store.getState();
-        setName(storeData.HomeComponentReducer.name); //更新store.name值
-    });
 
     const {Header, Content, Footer, Sider} = Layout;
 
-    const {token: {colorBgContainer, borderRadiusLG}} = theme.useToken();
+    // const {token: {colorBgContainer, borderRadiusLG}} = theme.useToken();
 
     const {getPrefixCls} = useContext(ConfigProvider.ConfigContext);
     const rootPrefixCls = getPrefixCls();
@@ -53,7 +49,6 @@ const MyLayout: FunctionComponent = () => {
         }
     `;
 
-
     const connectWallet = async () => {
         // let signer;
         let provider;
@@ -65,6 +60,8 @@ const MyLayout: FunctionComponent = () => {
             console.log("MetaMask not installed; using read-only defaults")
             alert("MetaMask not installed")
             provider = ethers.getDefaultProvider()
+            setProvider(provider);
+            // store.dispatch({type: EthereumReducerActionType.UPDATE_PROVIDER, provider});
             return
         }
 
@@ -83,21 +80,27 @@ const MyLayout: FunctionComponent = () => {
         // console.log('Connected MetaMask Account:', accounts);
 
         provider = new ethers.BrowserProvider(window.ethereum)
+        setProvider(provider);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        store.dispatch({type: EthereumReducerActionType.UPDATE_ETHEREUM_PROVIDER, provider});
+
         // It also provides an opportunity to request access to write
         // operations, which will be performed by the private key
         // that MetaMask manages for the user.
-        provider.getSigner().then(signer => {
-            //     执行一些操作，例如获取账户地址
-            setSigner(signer)
-            signer.getAddress().then((address) => {
-                // setWalletAddress(address)
-                console.log("Connected to MetaMask:", address);
-            }).catch((e: any) => {
-                console.log(e)
-            });
-        });
-    }
+        const signer = await provider.getSigner()
+        setSigner(signer);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        store.dispatch({type: EthereumReducerActionType.UPDATE_ETHEREUM_SIGNER, signer});
 
+        const accountAddress = await signer.getAddress();
+        setAccountAddress(accountAddress);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        store.dispatch({type: EthereumReducerActionType.UPDATE_ETHEREUM_ACCOUNT_ADDRESS, accountAddress});
+        console.log("Connected to MetaMask:", accountAddress);
+    }
 
     return ( //多行箭头函数返回 使用()
         <ConfigProvider
@@ -147,10 +150,10 @@ const MyLayout: FunctionComponent = () => {
                                 }}
                             >
                                 <a className="text-2xl mr-4 " href="https://github.com/garyganyang" target="_blank" rel="noopener noreferrer"><GithubFilled/></a>
-                                {walletAddress ?
+                                {accountAddress ?
                                     <Button type="primary">
                                         <img src="https://chainlist.org/connectors/icn-metamask.svg" width="20" height="20" alt=""/>
-                                        Connected {`${walletAddress.substring(0, 6)}...${walletAddress.substring(38)}`}</Button>
+                                        Connected {`${accountAddress.substring(0, 6)}...${accountAddress.substring(38)}`}</Button>
                                     :
                                     <Button type="primary" onClick={connectWallet}>
                                         <img src="https://chainlist.org/connectors/icn-metamask.svg" width="20" height="20" alt=""/>

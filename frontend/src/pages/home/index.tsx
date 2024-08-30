@@ -1,11 +1,12 @@
 import {FunctionComponent, useState, useEffect, useRef} from 'react'
 // import {useNavigate} from "react-router-dom";
-import store, {HomeComponentReducerActionType} from "../../redux/reduxStore";
+import store, {} from "../../redux/reduxStore";
 import {Button, InputNumber, Checkbox} from 'antd';
 import type {GetProp} from 'antd';
-
 import {getInfo2} from "../../http/api";
 import "./index.scss"
+import {ethers} from "ethers";
+import LockContract from "../../abi/Lock.json"
 
 interface Props {
     title: string;
@@ -18,6 +19,7 @@ interface Props {
 const HomeComponent: FunctionComponent<Props> = ({title}) => {
     title = title || "Home"
     // const navigate = useNavigate()
+    const [signer, setSigner] = useState<any>(); //获取store.signer作为默认值
     const matches: any = {
         "dataFrom": "",
         "emptyFlag": false,
@@ -3402,6 +3404,12 @@ const HomeComponent: FunctionComponent<Props> = ({title}) => {
     const [fixedWidth, setFixedWidth] = useState('100%'); // 初始宽度
     const aRef = useRef(null);
 
+    store.subscribe(() => {
+        const storeData = store.getState();
+        // console.log('subscribed signer:', storeData.EthereumReducer?.signer)
+        setSigner(storeData.EthereumReducer?.signer); //更新store.name值
+    });
+
     useEffect(() => {
         const updateFixedWidth = () => {
             const aElement: any = aRef.current;
@@ -3420,11 +3428,26 @@ const HomeComponent: FunctionComponent<Props> = ({title}) => {
     }, []);
 
     const updateCount = () => {
-        store.dispatch({type: HomeComponentReducerActionType.UPDATE_NAME, name: "其实我是想搞区块链全栈开发的,不得不把react学一学", payload: ""});
+        // store.dispatch({type: HomeComponentReducerActionType.UPDATE_NAME, name: "其实我是想搞区块链全栈开发的,不得不把react学一学", payload: ""});
+    }
+    const callWithdraw = async () => {
+        console.log(signer)
+        const contractAddress = '0x36e0192af8437227b4D459E9021f9BCA87DB0f9c'
+        const contractABI = LockContract.abi
+        const lockContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        await lockContract.on('Withdrawal', (owner, amount) => {
+            console.log(`Withdraw event: Owner: ${owner}, Amount: ${amount.toString()}`);
+        });
+
+        // Call the withdraw function
+        const tx = await lockContract.withdraw();
+        await tx.wait(); // Wait for the transaction to be mined
+        // store.dispatch({type: HomeComponentReducerActionType.UPDATE_NAME, name: "其实我是想搞区块链全栈开发的,不得不把react学一学", payload: ""});
     }
 
     // @ts-ignore allow-with-description
-    const callGetInfo2 = () => {
+    const callAPI = () => {
         getInfo2().then((res: unknown) => {
             console.log(res)
         })
@@ -3458,7 +3481,7 @@ const HomeComponent: FunctionComponent<Props> = ({title}) => {
                 </div>
                 {matches.value.matchInfoList.map((eachInfo: any) => {
                     return (
-                        <div key={eachInfo.businessDate} >
+                        <div key={eachInfo.businessDate}>
                             <div className="row-summary flex border-t border-l pl-2 pt-3 pb-3">{eachInfo.weekday} {eachInfo.businessDate} 共{eachInfo.matchCount}场比赛</div>
                             {eachInfo.subMatchList.map((eachMatch: any) => (
                                 <div key={eachMatch.matchId} className="row-match flex border-t text-center">
@@ -3523,11 +3546,11 @@ const HomeComponent: FunctionComponent<Props> = ({title}) => {
                     <div className="w-full">理论最高奖金: <span>136.59</span> wei</div>
                 </div>
                 <div className="flex items-center text-right" style={{height: "inherit", lineHeight: "inherit"}}>
-                    <Button className="mr-6" type="primary" onClick={updateCount}>奖金详情</Button>
+                    <Button className="mr-6" type="primary" onClick={callWithdraw}>奖金详情</Button>
                     <Button className="mr-6" type="primary" onClick={updateCount}>立即投注</Button>
                 </div>
             </div>
-            {/*<Button type="primary" onClick={callGetInfo2}>call http api</Button>*/}
+            {/*<Button type="primary" onClick={callAPI}>call http api</Button>*/}
         </div>
     );
 }
