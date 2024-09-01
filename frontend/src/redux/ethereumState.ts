@@ -13,7 +13,7 @@ interface EthereumComponentReducerAction {
     type: string,
     provider: any;
     signer: any,
-    accountAdd: string,
+    accountAddress: string,
     payload: any; // 可以根据需要替换为更具体的类型
 }
 
@@ -21,7 +21,7 @@ const EthereumInitState = {
     type: undefined,
     provider: undefined,
     signer: undefined,
-    accountAdd: undefined,
+    accountAddress: undefined,
     payload: undefined, // 可以根据需要替换为更具体的类型
 };
 
@@ -32,7 +32,7 @@ export const EthereumReducer = (state = EthereumInitState, action: EthereumCompo
         case EthereumReducerActionType.UPDATE_ETHEREUM_SIGNER:
             return {...state, signer: action.signer};
         case EthereumReducerActionType.UPDATE_ETHEREUM_ACCOUNT_ADDRESS:
-            return {...state, accountAdd: action.accountAdd};
+            return {...state, accountAddress: action.accountAddress};
         default:
             return state;
     }

@@ -55,8 +55,8 @@ contract BetTokenUpgradeable is
     **/
 
     function initialize() external initializer onlyProxy {
-        __ERC20_init("Soccer Bet Token", "SBT");
-        __Ownable_init();
+        __ERC20_init("Match Bet Token", "MBT");
+        __Ownable_init(msg.sender);
         __ReentrancyGuard_init();
         __ERC20Pausable_init();
     }

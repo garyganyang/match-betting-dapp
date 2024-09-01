@@ -4,10 +4,11 @@ import {EthereumReducerActionType} from "../redux/ethereumState.ts";
 import {Layout, theme, ConfigProvider, Button} from 'antd';
 import Icon, {GithubFilled} from "@ant-design/icons";
 import {Outlet} from "react-router-dom";
-import {FunctionComponent, useState, useContext} from "react";
+import {FunctionComponent, useState, useContext, useRef} from "react";
 import {ethers} from "ethers";
 import Aside from "./aside"
 import {css} from '@emotion/css';
+import BalanceComponent from "../pages/component/balance.tsx";
 
 // 使用 React.FunctionComponent 定义 函数组件 的类型
 // 使用 React.Component         定义   类组件 的类型
@@ -16,7 +17,7 @@ const MyLayout: FunctionComponent = () => {
     // const [walletAddress, setWalletAddress] = useState(); //获取store.walletAddress作为默认值
     const [, setSigner] = useState<any>(); //获取store.signer作为默认值
     const [accountAddress, setAccountAddress] = useState<any>(); //获取store.signer作为默认值
-    // const [bettingContract, setBettingContract] = useState(); //获取store.signer作为默认值
+    const balanceComponentRef = useRef<{ show: () => void }>(null);
 
 
     const {Header, Content, Footer, Sider} = Layout;
@@ -102,6 +103,11 @@ const MyLayout: FunctionComponent = () => {
         console.log("Connected to MetaMask:", accountAddress);
     }
 
+    const showMyBetTokenBalance = ()=>{
+        balanceComponentRef.current?.show();
+    }
+
+
     return ( //多行箭头函数返回 使用()
         <ConfigProvider
             theme={{
@@ -151,7 +157,7 @@ const MyLayout: FunctionComponent = () => {
                             >
                                 <a className="text-2xl mr-4 " href="https://github.com/garyganyang" target="_blank" rel="noopener noreferrer"><GithubFilled/></a>
                                 {accountAddress ?
-                                    <Button type="primary">
+                                    <Button type="primary" onClick={showMyBetTokenBalance}>
                                         <img src="https://chainlist.org/connectors/icn-metamask.svg" width="20" height="20" alt=""/>
                                         Connected {`${accountAddress.substring(0, 6)}...${accountAddress.substring(38)}`}</Button>
                                     :
@@ -170,6 +176,7 @@ const MyLayout: FunctionComponent = () => {
                     </Footer>
                 </Layout>
             </Layout>
+            <BalanceComponent ref={balanceComponentRef}/>
         </ConfigProvider>
     );
 }

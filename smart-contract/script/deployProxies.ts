@@ -19,14 +19,14 @@ async function main() {
     //set up a proxy admin (if needed), deploy an implementation contract
     //for the Box contract (unless there is one already from a previous deployment),
     //create a proxy, and initialize it
-    const ONE_MIN_LATER = Math.floor(Date.now() / 1000) + 60 * 5; // 设置 unlockTime 为 1 分钟后
-    const ONE_GWEI: bigint = 1_000_000_000n;
+    // const ONE_MIN_LATER = Math.floor(Date.now() / 1000) + 60 * 5; // 设置 unlockTime 为 1 分钟后
+    // const ONE_GWEI: bigint = 1_000_000_000n;
     // const unlockTime = m.getParameter("unlockTime", ONE_MIN_LATER);
     // const lockedAmount = m.getParameter("lockedAmount", ONE_GWEI);
 
 
-    console.log("ONE_MIN_LATER:", ONE_MIN_LATER);
-    const BetTokenFactory = await ethers.getContractFactory("BetToken");
+    // console.log("ONE_MIN_LATER:", ONE_MIN_LATER);
+    const BetTokenFactory = await ethers.getContractFactory("BetTokenUpgradeable");
     const BetTokenContract = await upgrades.deployProxy(BetTokenFactory, [], {
         kind: "uups"
     });
